@@ -5,7 +5,7 @@ public class Cube : Enemy
 {
     protected override void Attack()
     {
-        throw new System.NotImplementedException();
+        EventBus.Instance().OnPlayerDamaging(Damage);
     }
 
     protected override void Move()
@@ -15,11 +15,19 @@ public class Cube : Enemy
 
     private void Awake()
     {
-        base.Initialize(transform.GetComponent<NavMeshAgent>(), GameObject.Find("Player").transform, 20, 20, 10);
+        Initialize(transform.GetComponent<NavMeshAgent>(), GameObject.Find("Player").transform, 20, 20, 10);
     }
 
     private void Update()
     {
         Move();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.TryGetComponent<Player>(out Player player))
+        {
+            Attack();
+        }
     }
 }

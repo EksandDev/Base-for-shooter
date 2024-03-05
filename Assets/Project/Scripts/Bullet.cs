@@ -7,21 +7,38 @@ public class Bullet : MonoBehaviour, IProjectile, IInPool
     public int Damage { get; set; }
     public bool IsActive { get; set; }
 
+    private TrailRenderer _trail;
+    private Transform _parent;
+
+    public void Deactivate()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();
+        _trail = GetComponent<TrailRenderer>();
         IsActive = false;
+    }
+
+    private void Start()
+    {
+        _parent = transform.parent; 
     }
 
     private void OnEnable()
     {
         IsActive = true;
+        transform.parent = null;
+        Invoke(nameof(Deactivate), 3);
     }
 
     private void OnDisable()
     {
         IsActive = false;
-        transform.position = FirePoint.position;
+        transform.parent = _parent;
+        transform.position = _parent.position;
         CancelInvoke();
     }
 
@@ -31,10 +48,5 @@ public class Bullet : MonoBehaviour, IProjectile, IInPool
             damageable.TakeDamage(Damage);
 
         Deactivate();
-    }
-
-    private void Deactivate()
-    {
-        gameObject.SetActive(false);
     }
 }

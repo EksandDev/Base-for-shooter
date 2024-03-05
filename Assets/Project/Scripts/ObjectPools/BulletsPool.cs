@@ -9,12 +9,11 @@ public class BulletsPool : MonoBehaviour
 
     public Bullet CreateBullet(Vector3 spawnPosition)
     {
-        var obj = _currentPool.GetObject(spawnPosition);
-        return obj;
+        return _currentPool.GetObject(spawnPosition);
     }
 
     private void Awake()
     {
-        _currentPool = new ObjectsPool<Bullet>(_bulletPrefab, _bulletsCount);
+        _currentPool = new ObjectsPool<Bullet>(_bulletPrefab, _bulletsCount, transform);
     }
 }
